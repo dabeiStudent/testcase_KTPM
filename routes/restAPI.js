@@ -33,8 +33,6 @@ const restAPI = (app) => {
             return res.status(500).json({ err: err })
         }
     })
-
-
     app.use(router);
 }
 
