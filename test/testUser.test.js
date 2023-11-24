@@ -6,7 +6,7 @@ const server = require('../app');
 const should = chai.should();
 
 chai.use(chaiHttp);
-//Our parent block
+
 before(() => {
     console.log("Bắt đầu kiểm thử")
 })
@@ -19,7 +19,7 @@ describe('/Say Hello', () => {
 })
 
 describe('/Create New User', () => {
-    beforeEach((done) => { //Before each test we empty the database
+    beforeEach((done) => {
         User.deleteMany({})
             .then(() => done())
             .catch((error) => done(error));
