@@ -14,7 +14,13 @@ after(() => {
     console.log('Đã kiểm xong');
 })
 describe('/Say Hello', () => {
-    it('it should say hello to me', () => {
+    it('Chào mọi người', () => {
+        chai.request(server)
+            .post('/say-hello')
+            .end((err, res) => {
+                res.body.should.have.property('msg').eql("Hello bro");
+                done();
+            });
     });
 })
 
@@ -69,6 +75,34 @@ describe('/Create New User', () => {
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.have.property('msg').eql("Tạo tài khoản thành công");
+                done();
+            });
+    })
+    it('2 user có chung email nên báo lỗi', (done) => {
+        let user1 = {
+            email: "Quangduonggay@gmail.com",
+            passWord: "123",
+            firstName: "Duong1",
+            lastName: "Le1"
+        }
+        let user2 = {
+            email: "Quangduonggay@gmail.com",
+            passWord: "123",
+            firstName: "Duong2",
+            lastName: "Le2"
+        }
+        chai.request(server)
+            .post('/create-user')
+            .send(user1)
+            .end((err, res) => {
+                res.should.have.status(200);
+                done();
+            });
+        chai.request(server)
+            .post('/create-user')
+            .send(user2)
+            .end((err, res) => {
+                res.should.have.status(500);
                 done();
             });
     })
