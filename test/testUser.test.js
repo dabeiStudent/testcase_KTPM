@@ -10,6 +10,9 @@ chai.use(chaiHttp);
 before(() => {
     console.log("Bắt đầu kiểm thử")
 })
+after(() => {
+    console.log('Đã kiểm xong');
+})
 describe('/Say Hello', () => {
     it('it should say hello to me', () => {
     });
