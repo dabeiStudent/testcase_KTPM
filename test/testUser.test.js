@@ -1,6 +1,8 @@
 const User = require('../models/userModel');
 
 const chai = require('chai');
+const sinon = require('sinon');
+const argon2 = require('argon2');
 const chaiHttp = require('chai-http');
 const server = require('../app');
 const should = chai.should();
@@ -13,10 +15,11 @@ before(() => {
 after(() => {
     console.log('Đã kiểm xong');
 })
+
 describe('/Say Hello', () => {
     it('Chào mọi người', () => {
         chai.request(server)
-            .post('/say-hello')
+            .get('/say-hello')
             .end((err, res) => {
                 res.body.should.have.property('msg').eql("Hello bro");
                 done();
@@ -45,7 +48,6 @@ describe('/Create New User', () => {
                 done();
             });
     });
-
     it('Dữ liệu email không phù hợp nên báo lỗi', (done) => {
         let user = {
             email: "admin@gmail.com",
@@ -78,7 +80,7 @@ describe('/Create New User', () => {
                 done();
             });
     })
-    it('2 user có chung email nên báo lỗi', (done) => {
+    it('2 user có chung email nên báo lỗi', () => {
         let user1 = {
             email: "Quangduonggay@gmail.com",
             passWord: "123",
@@ -106,4 +108,21 @@ describe('/Create New User', () => {
                 done();
             });
     })
+    it('Hàm argon2 trả về kết quả hash lỗi', () => {
+        sinon.stub(argon2, 'hash').rejects(new Error('Hashing lỗi'));
+        chai.request(server)
+            .post('/create-user')
+            .send({
+                email: 'Quangduonggay@example.com',
+                passWord: '123',
+                firstName: 'Duong',
+                lastName: 'Le',
+            })
+            .end((err, res) => {
+                res.should.have.status(500);
+                res.body.should.have.property('err').eql("Hashing lỗi");
+            })
+        argon2.hash.restore();
+    });
 });
+
