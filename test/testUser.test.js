@@ -7,10 +7,11 @@ const should = chai.should();
 
 chai.use(chaiHttp);
 //Our parent block
+before(() => {
+    console.log("Bắt đầu kiểm thử")
+})
 describe('/Say Hello', () => {
-    describe('/say-hello', () => {
-        it('it should say hello to me', () => {
-        });
+    it('it should say hello to me', () => {
     });
 })
 
