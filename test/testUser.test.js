@@ -17,10 +17,15 @@ after(() => {
 })
 
 describe('/Say Hello', () => {
+    before(() => {
+        console.log('Test chào mọi người');
+    })
     it('Chào mọi người', () => {
         chai.request(server)
             .get('/say-hello')
             .end((err, res) => {
+                should.not.exist(err);
+                res.should.have.status(200);
                 res.body.should.have.property('msg').eql("Hello bro");
                 done();
             });
@@ -80,26 +85,25 @@ describe('/Create New User', () => {
                 done();
             });
     })
-    it('2 user có chung email nên báo lỗi', () => {
+    it('2 user có chung email nên báo lỗi', (done) => {
         let user1 = {
             email: "Quangduonggay@gmail.com",
             passWord: "123",
             firstName: "Duong1",
             lastName: "Le1"
         }
+        chai.request(server)
+            .post('/create-user')
+            .send(user1)
+            .end((err, res) => {
+                res.should.have.status(200);
+            });
         let user2 = {
             email: "Quangduonggay@gmail.com",
             passWord: "123",
             firstName: "Duong2",
             lastName: "Le2"
         }
-        chai.request(server)
-            .post('/create-user')
-            .send(user1)
-            .end((err, res) => {
-                res.should.have.status(200);
-                done();
-            });
         chai.request(server)
             .post('/create-user')
             .send(user2)
