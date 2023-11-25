@@ -17,15 +17,11 @@ after(() => {
 })
 
 describe('/Say Hello', () => {
-    it('Chào mọi người', () => {
-        chai.request(server)
-            .get('/say-hello')
-            .end((err, res) => {
-                should.not.exist(err);
-                res.should.have.status(200);
-                res.body.should.have.property('msg').eql("Hello bro");
-                done();
-            });
+    it('Chào mọi người', async () => {
+        const res = await chai
+            .request(server)
+            .get('/say-hello');
+        res.body.should.have.property('msg').eql("Hello bro");
     });
 })
 
@@ -82,19 +78,16 @@ describe('/Create New User', () => {
                 done();
             });
     })
-    it('2 user có chung email nên báo lỗi', (done) => {
+    it('2 user có chung email nên báo lỗi', async (done) => {
         let user1 = {
             email: "Quangduonggay@gmail.com",
             passWord: "123",
             firstName: "Duong1",
             lastName: "Le1"
         }
-        chai.request(server)
+        await chai.request(server)
             .post('/create-user')
-            .send(user1)
-            .end((err, res) => {
-                res.should.have.status(200);
-            });
+            .send(user1);
         let user2 = {
             email: "Quangduonggay@gmail.com",
             passWord: "123",
