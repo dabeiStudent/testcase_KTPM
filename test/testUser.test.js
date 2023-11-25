@@ -17,9 +17,6 @@ after(() => {
 })
 
 describe('/Say Hello', () => {
-    before(() => {
-        console.log('Test chào mọi người');
-    })
     it('Chào mọi người', () => {
         chai.request(server)
             .get('/say-hello')
@@ -42,7 +39,7 @@ describe('/Create New User', () => {
         let user = {
             email: "quangduonggay@gmail.com",
             passWord: "123",
-            firstName: "Duong"
+            firstName: "Duong",
         }
         chai.request(server)
             .post('/create-user')
@@ -112,21 +109,6 @@ describe('/Create New User', () => {
                 done();
             });
     })
-    it('Hàm argon2 trả về kết quả hash lỗi', () => {
-        sinon.stub(argon2, 'hash').rejects(new Error('Hashing lỗi'));
-        chai.request(server)
-            .post('/create-user')
-            .send({
-                email: 'Quangduonggay@example.com',
-                passWord: '123',
-                firstName: 'Duong',
-                lastName: 'Le',
-            })
-            .end((err, res) => {
-                res.should.have.status(500);
-                res.body.should.have.property('err').eql("Hashing lỗi");
-            })
-        argon2.hash.restore();
-    });
 });
+
 

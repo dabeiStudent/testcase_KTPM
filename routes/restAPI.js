@@ -17,21 +17,18 @@ const restAPI = (app) => {
         if (email == "admin@gmail.com") {
             return res.status(400).json({ err: "Không thể đặt email này" });
         }
-        try {
-            const hashedPassword = await argon2.hash(passWord);
-            User.create({
-                firstName: firstName,
-                lastName: lastName,
-                email: email,
-                passWord: hashedPassword,
+        const hashedPassword = await argon2.hash(passWord);
+        User.create({
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            passWord: hashedPassword,
+        })
+            .then(user => {
+                return res.status(200).json({ msg: 'Tạo tài khoản thành công' })
             })
-                .then(user => {
-                    return res.status(200).json({ msg: 'Tạo tài khoản thành công' })
-                })
-                .catch(err => { return res.status(500).json({ err: err }) });
-        } catch (err) {
-            return res.status(500).json({ err: err })
-        }
+            .catch(err => { return res.status(500).json({ err: err }) });
+
     })
     app.use(router);
 }
